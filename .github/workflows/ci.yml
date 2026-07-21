@@ -1,0 +1,76 @@
+name: CI
+
+# Runs on every push to main and every pull request. No publishing happens here.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Deny-by-default: no token is granted unless a job explicitly asks for it.
+permissions: {}
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # Oldest supported (engines.node) through current.
+        node-version: [20, 22, 24]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node-version }}
+      # `npm ci` (never `npm install`) — installs strictly from package-lock.json.
+      - name: Install (locked)
+        run: npm ci
+      - name: Test
+        run: npm test
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Install (locked)
+        run: npm ci
+      - name: Syntax check
+        run: npm run lint
+
+  locked-in:
+    name: locked-in
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # locked-in verifies lockfile usage + version pinning. It is a Rust CLI;
+      # we install it from a pinned commit so the check itself is reproducible.
+      # Check https://github.com/asymmetric-research/locked-in/releases and bump.
+      LOCKED_IN_COMMIT: 7978ff8e3717a30c18352ab1eb687e5f8210a5ac # v0.3.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Install locked-in from pinned source
+        run: cargo install --locked --git https://github.com/asymmetric-research/locked-in --rev "$LOCKED_IN_COMMIT" locked-in
+      - name: Run locked-in
+        run: locked-in .

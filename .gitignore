@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build / packaging output
+dist/
+build/
+*.tgz
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Env
+.env
+.env.*
+
+# Internal planning spec — not for the public repo
+goal.md

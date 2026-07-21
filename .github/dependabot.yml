@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # Keeps the SHA-pinned actions current. Dependabot rewrites the pinned commit
+  # and updates the trailing "# vX.Y.Z" version comment for us.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    # Minimum release age before an update PR is opened (supply-chain defense).
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "ci"
+
+  # Present for completeness. This package has zero runtime deps, so this only
+  # fires if a (dev) dependency is ever added.
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "deps"

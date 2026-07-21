@@ -1,0 +1,41 @@
+{
+  "name": "@mhumesf/npm-publish-practice",
+  "version": "0.1.0",
+  "description": "Minimal hello-world package that exists to exercise a hardened, OIDC-based secure npm publishing pipeline.",
+  "keywords": [
+    "hello-world",
+    "example",
+    "trusted-publishing",
+    "provenance",
+    "supply-chain",
+    "oidc"
+  ],
+  "license": "MIT",
+  "author": "mhumesf",
+  "homepage": "https://github.com/mhumeSF/npm-publish-practice#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mhumeSF/npm-publish-practice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mhumeSF/npm-publish-practice/issues"
+  },
+  "type": "commonjs",
+  "main": "index.js",
+  "exports": "./index.js",
+  "files": [
+    "index.js"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "test": "node --test",
+    "lint": "node --check index.js"
+  }
+}
